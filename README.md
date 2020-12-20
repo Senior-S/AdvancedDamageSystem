@@ -1,7 +1,7 @@
 # AdvancedDamageSystem
 A new system of damage for you server.
 
-[![Discord](https://img.shields.io/discord/764502843906064434?label=Discord%20chat)](http://discord.dvtserver.xyz/)
+[![Discord](https://img.shields.io/discord/764502843906064434?label=Discord%20chat)](https://discord.com/invite/wMrPygv)
 
 ## How it work:
 The plugin have the next characteristics:
