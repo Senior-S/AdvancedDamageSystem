@@ -34,6 +34,7 @@ namespace AdvancedDamageSystem
             if (user == null || pendingTotalDamage < 5) return;
             if (damageOrigin == EDamageOrigin.Vehicle_Collision_Self_Damage)
             {
+                if (!Configuration.Instance.Allow_vehicle_damage) return;
                 int damage = random.Next(1, Configuration.Instance.Max_damage_per_vehicle_crash);
                 if (vehicle.checkDriver(instigatorSteamID))
                 {
@@ -73,8 +74,21 @@ namespace AdvancedDamageSystem
         private void DamagePlayerRequested(ref DamagePlayerParameters parameters, ref bool shouldAllow)
         {
             UnturnedPlayer user = UnturnedPlayer.FromPlayer(parameters.player);
-            if (parameters.cause == EDeathCause.VEHICLE)
+            if (parameters.cause == EDeathCause.MELEE)
             {
+                if (!Configuration.Instance.Allow_melee_damage) shouldAllow = false;
+            }
+            else if (parameters.cause == EDeathCause.GUN)
+            {
+                if (!Configuration.Instance.Allow_gun_damage)
+                {
+                    shouldAllow = false;
+                    return;
+                }
+            }
+            else if (parameters.cause == EDeathCause.VEHICLE)
+            {
+                if (!Configuration.Instance.Allow_vehicle_damage) return;
                 if (parameters.damage >= 20)
                 {
                     user.Player.life.serverSetLegsBroken(true);
@@ -111,13 +125,15 @@ namespace AdvancedDamageSystem
                 case ELimb.LEFT_HAND:
                     if (per > Configuration.Instance.Percentage_drop_gun)
                     {
-                        user.Player.inventory.sendDropItem(user.Player.equipment.equippedPage, user.Player.equipment.equipped_x, user.Player.equipment.equipped_y);
+                        user.Player.equipment.dequip();
+                        //user.Player.inventory.sendDropItem(user.Player.equipment.equippedPage, user.Player.equipment.equipped_x, user.Player.equipment.equipped_y);
                     }
                     break;
                 case ELimb.RIGHT_HAND:
                     if (per > Configuration.Instance.Percentage_drop_gun)
                     {
-                        user.Player.inventory.sendDropItem(user.Player.equipment.equippedPage, user.Player.equipment.equipped_x, user.Player.equipment.equipped_y);
+                        user.Player.equipment.dequip();
+                        //user.Player.inventory.sendDropItem(user.Player.equipment.equippedPage, user.Player.equipment.equipped_x, user.Player.equipment.equipped_y);
                     }
                     break;
             }
